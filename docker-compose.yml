@@ -2,26 +2,43 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: omsdemo
+      POSTGRES_USER: ${USERNAME}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: ${DATABASE}
     ports:
       - 5432:5432
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d omsdemo"]
+      test: ["CMD-SHELL", "pg_isready -U ${USERNAME} -d ${DATABASE}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  pgadmin:
+      image: dpage/pgadmin4:latest
+      container_name: pgadmin4
+      restart: always
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@example.com
+        PGADMIN_DEFAULT_PASSWORD: admin
+      ports:
+        - "5050:80"
+      volumes:
+        - pgadmin_data:/var/lib/pgadmin
+      depends_on:
+        - db
+
+
       
   omsdemo:
+    image: akshay0918/omsdemo:latest
     build: .
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     volumes:
       - .:/app
     environment:
-      - DATABASE_URL=postgresql:postgres:password@db:5432/omsdemo
+      - DATABASE_URL=postgresql://${USERNAME}:${PASSWORD}@db:${PORT}/${DATABASE}
     depends_on:
       db:
         condition: service_healthy
@@ -39,5 +56,6 @@ services:
 
 volumes:
   db_data:
+  pgadmin_data:
 
       

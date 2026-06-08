@@ -1,7 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = "postgresql://postgres:password@localhost:5432/omsdemo"
+# Load variables from .env into the system environment
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -14,9 +18,3 @@ def get_db():
     finally:
         db.close()
 
-def main():
-    Base.metadata.create_all(bind=engine)
-    print("Database tables created successfully.")
-
-if __name__ == "__main__":
-    main()
