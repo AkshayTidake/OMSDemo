@@ -47,5 +47,5 @@ jobs:
                 - name: Deploy to Docker
                   run: |
                     # Pulls the exact unique image built during this specific commit execution
-                    docker run -d --name omsdemo -p 80:80 akshay0918/omsdemo:latest python -m uvicorn main:app --host 0.0.0.0 --port 80
+                    docker run -d --name omsdemo -p 80:80 akshay0918/omsdemo:latest python -m uvicorn app.main:app --host 0.0.0.0 --port 80
 
