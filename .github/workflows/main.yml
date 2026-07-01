@@ -41,4 +41,4 @@ jobs:
             steps:
                 - name: Deploy to Docker
                   run: |
-                    docker run -d --name omsdemo -p 80:80 akshay0918/omsdemo
+                    docker run -d --name omsdemo -p 80:80 akshay0918/omsdemo:latest

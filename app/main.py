@@ -8,22 +8,22 @@ from app.api.auth import router as auth_router
 
 limiter = Limiter(key_func=lambda request: request.client.host)
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     # Startup code: Create database tables
-#     Base.metadata.create_all(bind=engine)
-#     print("Database tables created.")
-#     yield
-#     # Shutdown code (if needed)
-#     print("Application shutdown.")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code: Create database tables
+    Base.metadata.create_all(bind=engine.sync_engine)
+    print("Database tables created.")
+    yield
+    # Shutdown code (if needed)
+    print("Application shutdown.")
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 
 
-# @app.get("/api/v1")
-# async def read_root(token : Annotated[str, Depends(oauth2_scheme)]):
-#     return {"Hello": "World"}
+@app.get("/api/v1")
+async def read_root():
+    return {"Hello": "World"}
 
 
 # async def get_current_user(token : Annotated[str, Depends(oauth2_scheme)]):
