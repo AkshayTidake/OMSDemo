@@ -42,17 +42,29 @@ jobs:
                     no-cache: true  
         deploy:
             needs: build
-            runs-on: ubuntu-latest
-            # Defining the app as a service container keeps it alive for your automation tasks
-            services:
-              oms-app:
-                image: akshay0918/omsdemo:latest
-                ports:
-                  - 80:80
+            runs-on: self-hosted
             steps:
-                - name: Verify Container is Up and Running
+                - name: Checkout repository code
+                  uses: actions/checkout@v4.2.2
+
+                - name: Create local .env file
                   run: |
-                    echo "Waiting for container to initialize..."
-                    sleep 5
-                    # Test if the API responds to local network traffic
-                    curl --retry 5 --retry-delay 2 http://localhost:80/docs || curl http://localhost:80/
+                    # 1. Define base variables
+                    echo "USERNAME=akshay" > .env
+                    echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+                    echo "DATABASE=omsdemo" >> .env
+                    echo "PORT=5432" >> .env
+                    
+                    # 2. Build the exact DATABASE_URL with zero interpolation bugs
+                    echo "DATABASE_URL=postgresql+asyncpg://akshay:${{ secrets.DB_PASSWORD }}@postgres:5432/omsdemo" >> .env
+                    
+                    # 3. Add application settings
+                    echo "ACCESS_TOKEN_EXPIRE_MINUTES=15" >> .env
+                    echo "REFRESH_TOKEN_EXPIRE_DAYS=30" >> .env
+                    echo "ALGORITHM=HS256" >> .env
+                    echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+
+                - name: Pull and Start Docker Compose Locally
+                  run: |
+                    docker compose pull
+                    docker compose up -d --remove-orphans
