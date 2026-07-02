@@ -1,21 +1,22 @@
-# from pwdlib import PasswordHash
-from passlib.context import CryptoContext
+from pwdlib import PasswordHash
 from datetime import datetime, timedelta
 from jose import jwt
 from app.core.config import settings
 
 
-pwd_context = CryptoContext(schemes=["bycrypt"], deprecated="auto")
+password_hash = PasswordHash.recommended()
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password,hashed_password)
+def get_password_hash(password: str) -> str:
+    return password_hash.hash(password)
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    return password_hash.verify(password, hashed_password)
 
 def create_access_token(data: dict):
     payload = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.ACCES_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload.update({"exp": expire})
 
     return jwt.encode(payload, settings.SECRET_KEY,

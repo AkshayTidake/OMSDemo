@@ -2,7 +2,7 @@ from fastapi import Depends,FastAPI
 from typing import Annotated
 from contextlib import asynccontextmanager
 from app.core.database import engine,Base
-from OMSDemo.app.models.user import User
+from app.models.user import User
 from slowapi import Limiter
 from app.api.auth import router as auth_router
 
@@ -10,12 +10,8 @@ limiter = Limiter(key_func=lambda request: request.client.host)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup code: Create database tables
-    Base.metadata.create_all(bind=engine.sync_engine)
-    print("Database tables created.")
     yield
-    # Shutdown code (if needed)
-    print("Application shutdown.")
+    
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)

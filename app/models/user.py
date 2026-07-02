@@ -19,5 +19,5 @@ class User(Base):
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
-    id = mapped_column(primary_key=True)
-    user_id = mapped_column(ForeignKey("users.id"))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"),nullable=False, index=True)
