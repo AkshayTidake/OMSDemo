@@ -43,9 +43,16 @@ jobs:
         deploy:
             needs: build
             runs-on: ubuntu-latest
+            # Defining the app as a service container keeps it alive for your automation tasks
+            services:
+              oms-app:
+                image: akshay0918/omsdemo:latest
+                ports:
+                  - 80:80
             steps:
-                - name: Deploy to Docker
+                - name: Verify Container is Up and Running
                   run: |
-                    # Pulls the exact unique image built during this specific commit execution
-                    docker run -d --name omsdemo -p 80:80 akshay0918/omsdemo:latest python -m uvicorn app.main:app --host 0.0.0.0 --port 80
-
+                    echo "Waiting for container to initialize..."
+                    sleep 5
+                    # Test if the API responds to local network traffic
+                    curl --retry 5 --retry-delay 2 http://localhost:80/docs || curl http://localhost:80/
