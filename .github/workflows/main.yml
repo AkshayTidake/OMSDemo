@@ -51,11 +51,20 @@ jobs:
                 - name: Create local .env file
                   run: |
                     # 1. Define base variables
-                    echo "USERNAME=akshay" > .env
-                    echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-                    echo "DATABASE=omsdemo" >> .env
-                    echo "PORT=5432" >> .env
-                    
+                    echo "APP_NAME=OMSDemo" > .env
+                    echo "APP_ENV=development" >> .env
+                    echo "DEBUG=True" >> .env
+                    echo "DATABASE_USER=akshay" > .env
+                    echo "DATABASE_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+                    echo "DATABASE_NAME=omsdemo" >> .env
+                    echo "DATABASE_PORT=5432" >> .env
+                    echo "DATABASE_HOST=postgres" >> .env
+                    echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+                    echo "REDIS_HOST=redis" >> .env
+                    echo "REDIS_PORT=6379" >> .env
+                    echo "ACCESS_TOKEN_EXPIRE_MINUTES=15" >> .env
+                    echo "REFRESH_TOKEN_EXPIRE_DAYS=30" >> .env
+                    echo "ALGORITHM=HS256" >> .env
                     # 2. Build the exact DATABASE_URL with zero interpolation bugs
                     echo "DATABASE_URL=postgresql+asyncpg://akshay:${{ secrets.DB_PASSWORD }}@postgres:5432/omsdemo" >> .env
                     
