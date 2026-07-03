@@ -7,11 +7,11 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     DEBUG: bool = False
 
-    USERNAME: str
-    PASSWORD: str
-    DATABASE: str
-    PORT: int = 5432
-    HOST: str = "postgres"
+    DATABASE_USER: str
+    DATABASE_PASSWORD: str
+    DATABASE_NAME: str
+    DATABASE_PORT: int = 5432
+    DATABASE_HOST: str = "postgres"
 
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql+asyncpg://{self.USERNAME}:{self.PASSWORD}@{self.HOST}:{self.PORT}/{self.DATABASE}"
+        return f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
 
 @lru_cache
 def get_settings() -> Settings:
