@@ -48,23 +48,28 @@ jobs:
                 - name: Checkout repository code
                   uses: actions/checkout@v4.2.2
 
-                - name: Create local .env file
+                - name: Create .env
                   run: |
-                    # 1. Define base variables
-                    echo "USERNAME=akshay" > .env
-                    echo "PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-                    echo "DATABASE=omsdemo" >> .env
-                    echo "PORT=5432" >> .env
-                    
-                    # 2. Build the exact DATABASE_URL with zero interpolation bugs
-                    echo "DATABASE_URL=postgresql+asyncpg://akshay:${{ secrets.DB_PASSWORD }}@postgres:5432/omsdemo" >> .env
-                    
-                    # 3. Add application settings
-                    echo "ACCESS_TOKEN_EXPIRE_MINUTES=15" >> .env
-                    echo "REFRESH_TOKEN_EXPIRE_DAYS=30" >> .env
-                    echo "ALGORITHM=HS256" >> .env
-                    echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+                    cat > .env <<EOF
+                    APP_NAME=OMSDemo
+                    APP_ENV=development
+                    DEBUG=False
 
+                    DATABASE_HOST=postgres
+                    DATABASE_PORT=5432
+                    DATABASE_NAME=omsdemo
+                    DATABASE_USER=akshay
+                    DATABASE_PASSWORD=${{ secrets.DB_PASSWORD }}
+
+                    REDIS_HOST=redis
+                    REDIS_PORT=6379
+
+                    SECRET_KEY=${{ secrets.SECRET_KEY }}
+                    ALGORITHM=HS256
+
+                    ACCESS_TOKEN_EXPIRE_MINUTES=15
+                    REFRESH_TOKEN_EXPIRE_DAYS=30
+                    EOF
                 - name: Pull and Start Docker Compose Locally
                   run: |
                     docker compose pull
