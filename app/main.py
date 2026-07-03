@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from app.core.database import engine,Base
 from app.models.user import User
 from slowapi import Limiter
-from app.api.auth import router as auth_router
+from OMSDemo.app.api.v1.auth import router as auth_router
 
 limiter = Limiter(key_func=lambda request: request.client.host)
 

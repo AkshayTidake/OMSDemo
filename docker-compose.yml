@@ -32,6 +32,8 @@ services:
   omsdemo:
     image: akshay0918/omsdemo:latest
     build: .
+    env_file:
+      - .env
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     volumes:
       - .:/app
@@ -44,6 +46,9 @@ services:
       - 80:80
   redis:
     image: redis:7-alpine
+    container_name: oms_redis
+    ports:
+      -"6379:6379"
 
   nginx:
     image: nginx:latest
