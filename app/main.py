@@ -2,9 +2,10 @@ from fastapi import Depends,FastAPI
 from typing import Annotated
 from contextlib import asynccontextmanager
 from app.core.database import engine,Base
+from app.core.config import settings
 from app.models.user import User
 from slowapi import Limiter
-from OMSDemo.app.api.v1.auth import router as auth_router
+from app.api.v1.auth import router as auth_router
 
 limiter = Limiter(key_func=lambda request: request.client.host)
 
@@ -13,7 +14,7 @@ async def lifespan(app: FastAPI):
     yield
     
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title=settings.APP_NAME,lifespan=lifespan)
 app.include_router(auth_router)
 
 
