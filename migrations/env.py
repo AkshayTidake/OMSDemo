@@ -9,7 +9,8 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import ALL models
-from app.models.user import User,RefreshToken
+from app.models.user import User
+from app.models.refresh_token import RefreshToken
 
 config = context.config
 
